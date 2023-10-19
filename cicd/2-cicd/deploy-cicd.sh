@@ -42,6 +42,8 @@ aws cloudformation validate-template \
   | cat
 
 ACCOUNT=$(aws sts get-caller-identity --query "Account" --output text)
+CODESTAR_CONNECTION_ARN=$(aws codestar-connections list-connections --query "Connections[?ConnectionName=='GitHub'].ConnectionArn" --output text)
+CODESTAR_CONNECTION_ID=$(basename "${CODESTAR_CONNECTION_ARN}")
 
 read -r -p "Would you like to deploy this template to AWS account $ACCOUNT? [y/N] " response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]
@@ -50,7 +52,7 @@ then
   aws cloudformation deploy \
     --stack-name $STACK_NAME \
     --template-file $TEMPLATE_FILE \
-    --parameter-overrides GitHubBranch=$TARGET_BRANCH GitHubBadgeEnabled=$GITHUB_BADGE_ENABLED EnvironmentType=$ENVIRONMENT_TYPE \
+    --parameter-overrides GitHubBranch=$TARGET_BRANCH GitHubBadgeEnabled=$GITHUB_BADGE_ENABLED EnvironmentType=$ENVIRONMENT_TYPE CodeStarConnectionResourceId=$CODESTAR_CONNECTION_ID \
     --capabilities CAPABILITY_IAM \
     --tags EnvType=${ENVIRONMENT_TYPE} \
     "$@"
