@@ -42,7 +42,7 @@ aws cloudformation validate-template \
   | cat
 
 ACCOUNT=$(aws sts get-caller-identity --query "Account" --output text)
-CODESTAR_CONNECTION_ARN=$(aws codestar-connections list-connections --query "Connections[?ConnectionName=='GitHub'].ConnectionArn" --output text)
+CODESTAR_CONNECTION_ARN=$(aws codestar-connections list-connections --query "Connections[?ConnectionName=='GitHub2023'].ConnectionArn" --output text)
 CODESTAR_CONNECTION_ID=$(basename "${CODESTAR_CONNECTION_ARN}")
 
 read -r -p "Would you like to deploy this template to AWS account $ACCOUNT? [y/N] " response
